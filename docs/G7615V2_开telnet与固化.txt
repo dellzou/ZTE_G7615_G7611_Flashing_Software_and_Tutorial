@@ -1,0 +1,79 @@
+90869BC9929A
+
+./zteonu -h
+./zteonu --ip 192.168.1.1
+./zteonu --telnet 
+
+
+telnet 192.168.1.1
+
+sendcmd 1 DB set DevAuthInfo 1 Level 1
+上一条命令是把光猫背面的普通用户提升为超级管理员。
+sendcmd 1 DB set DevAuthInfo 0 User admin
+sendcmd 1 DB set DevAuthInfo 0 Pass admin
+上两条命令是设置修改超级管理员的用户名和密码xxxxxx可自行设置。
+sendcmd 1 DB p TelnetCfg
+sendcmd 1 DB set TelnetCfg 0 Lan_Enable 1
+sendcmd 1 DB set TelnetCfg 0 TS_UName admin
+sendcmd 1 DB set TelnetCfg 0 TS_UPwd admin
+sendcmd 1 DB set TelnetCfg 0 TSLan_UName admin
+sendcmd 1 DB set TelnetCfg 0 TSLan_UPwd admin
+sendcmd 1 DB set TelnetCfg 0 Max_Con_Num 99
+sendcmd 1 DB set TelnetCfg 0 ExitTime 999999
+sendcmd 1 DB set TelnetCfg 0 InitSecLvl 3
+sendcmd 1 DB set TelnetCfg 0 CloseServerTime 9999999
+sendcmd 1 DB set TelnetCfg 0 Lan_EnableAfterOlt 1
+上11条命令是固化telnet的命令，其中xxxx是用户名，yyyy是密码，可自行设置，但上下两次输入的xxxx和yyyy要一致。
+sendcmd 1 DB save
+上面一行命令是保存配置的命令，记得每次执行完一项任务都用上一行命令保存一下配置。
+reboot
+上一行是重启命令，保存好配置，重启一下光猫。
+如果你仅为自己的光猫开telnet，和获得超级管理员超密的话，还有自己的光猫就不用改SN和地区了。
+
+修改地区只需要换后面三位数就行，225是江西
+upgradetest sdefconf 225
+
+
+1. 普通用户提权为admin：
+sendcmd 1 DB set DevAuthInfo 1 Level 1
+sendcmd 1 DB save
+
+
+2.修改超级用户名和密码：
+sendcmd 1 DB set DevAuthInfo 0 User XXXXXX
+sendcmd 1 DB set DevAuthInfo 0 Pass XXXXXX
+
+
+3.修改用户限制：
+sendcmd 1 DB p CltLmt
+sendcmd 1 DB set CltLmt 8 Max 20 (修改最大用户数为20，可以改成其他数目，最大数目不
+超过255)
+sendcmd 1 DB set CltLmt 8 Enable 0
+sendcmd 1 DB save
+
+
+4. 关闭TR069与定时上报（不懂的用户慎操作）：
+sendcmd 1 DB p MgtServer #查看一下当前的电信远程控制
+sendcmd 1 DB set MgtServer 0 URL http://127.0.0.1 把服务器 URL 改掉
+sendcmd 1 DB set MgtServer 0 Tr069Enable 0
+sendcmd 1 DB set MgtServer 0 PeriodicInformEnable 0
+sendcmd 1 DB save
+
+
+5. 劫持ITMS注册（不懂的用户慎操作）：
+sendcmd 1 DB set PDTCTUSERINFO 0 Status 0
+sendcmd 1 DB set PDTCTUSERINFO 0 Result 1
+sendcmd 1 DB save
+
+
+6. 恢复TR069与定时上报功能（以广东电信为例，每个省份的上报服务器应该不一样）
+sendcmd 1 DB p MgtServer #查看一下当前的电信远程控制
+sendcmd 1 DB set MgtServer 0 URL http://devacs.edatahome.com:9090/ACS-server/ACS
+sendcmd 1 DB set MgtServer 0 Tr069Enable 1
+sendcmd 1 DB set MgtServer 0 PeriodicInformEnable 1
+sendcmd 1 DB save
+
+
+
+
+

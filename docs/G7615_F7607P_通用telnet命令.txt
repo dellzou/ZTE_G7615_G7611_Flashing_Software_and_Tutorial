@@ -1,0 +1,121 @@
+﻿查看固件版本
+upgradetest getver
+
+搞残rms:
+1、sendcmd 1 DB p MgtServer
+2、sendcmd 1 DB set MgtServer 0 URL http://127.0.0.1 把 服务器 URL 改掉
+3、sendcmd 1 DB set MgtServer 0 Tr069Enable 0 ：禁用TR069远程控制
+4、输入 sendcmd 1 DB save (注意空格和大小写）解释：修改保存
+
+—破解刷电信后打开任意网页自动跳转LOID注册页面—
+sendcmd 1 DB set PDTCTUSERINFO 0 Status 0
+sendcmd 1 DB set PDTCTUSERINFO 0 Result 1
+sendcmd 1 DB save
+
+—开永久telnet（密码Zte521）—
+sendcmd 1 DB p TelnetCfg
+sendcmd 1 DB set TelnetCfg 0 Lan_Enable 1
+sendcmd 1 DB set TelnetCfg 0 TS_UName root
+sendcmd 1 DB set TelnetCfg 0 TSLan_UName root
+sendcmd 1 DB set TelnetCfg 0 TS_UPwd Zte521
+sendcmd 1 DB set TelnetCfg 0 TSLan_UPwd Zte521
+sendcmd 1 DB set TelnetCfg 0 Max_Con_Num 99
+sendcmd 1 DB set TelnetCfg 0 ExitTime 999999
+sendcmd 1 DB set TelnetCfg 0 InitSecLvl 3
+sendcmd 1 DB set TelnetCfg 0 CloseServerTime 9999999
+sendcmd 1 DB set TelnetCfg 0 Lan_EnableAfterOlt 1
+sendcmd 1 DB save
+
+—备份mtd0分区C
+dd if=/dev/mtd0 of=/mnt/【优盘目录名】/f7607p.bin
+或
+cat /dev/mtd0 > /mnt/【优盘目录名】/f7607p.bin
+
+—删除Wi-Fi前缀—
+sendcmd 1 DB set WLANCfg 0 ESSIDPrefix （设置2.4G的ssid前缀为空）
+sendcmd 1 DB set WLANCfg 4 ESSIDPrefix （设置5G的ssid前缀为空）
+sendcmd 1 DB save
+
+--查询区域码命令--
+cat /etc/init.d/regioncode
+
+区域代码:9 u" E( m2 s) ^) U
+200:Jiangsu
+201:Xinjiang
+202:Hainan
+203:Tianjin
+204:Anhui
+205:Shanghai
+206:Chongqing
+207:Beijing
+208:Sichuan
+209:Shandong
+210:Guangdong
+211:Hubei
+212:Fujian
+214:Zhejiang
+215:Shanxi
+216:Hunan
+217:Yunnan
+218:Xizang
+219:Heilongjiang
+220:Guizhou
+221:Shanxi2
+222:Hebei
+223:Ningxia
+224:Guangxi
+225:Jiangxi
+226:Gansu
+227inghai
+229iaoning
+230:Jilin
+231:Neimeng
+232:Henan
+234:TelecomInstitute
+
+—切换区域（省份）—
+
+upgradetest sdefconf 211 （湖北）
+
+—修改超密—
+sendcmd 1 DB set DevAuthInfo 0 User xxxxx （改超级用户名xxxxx）
+sendcmd 1 DB set DevAuthInfo 0 Pass xxxxxx（改超级用户密码xxxxx）
+sendcmd 1 DB save
+
+—查看系统参数—
+setmac show2
+
+—修改ponmac—
+setmac 1 32769 MAC地址
+
+—删除电信远程控制—
+sendcmd 1 DB p MgtServer （查看一下当前的电信远程控制）
+sendcmd 1 DB set MgtServer 0 URL http://127.0.0.1  把服务器 URL 改掉
+sendcmd 1 DB set MgtServer 0 Tr069Enable 0 禁用TR069远程控制
+sendcmd 1 DB save
+
+—关闭下行GPON光口和WiFi—
+ip link set mini-olt down
+rmmod optical
+rmmod mtlk
+rmmod mtlkroot
+
+破解连接数限制
+1、输入 sendcmd 1 DB p CltLmt （注意空格和大小写）解释：查看一下当前的用户数量
+2、输入 sendcmd 1 DB set CltLmt 8 Max 100 （注意空格和大小写）解释：修改最大用户数为100,原来是4,可以改成其他数目，建议最大数目不超过255
+3、输入 sendcmd 1 DB save  （注意空格和大小写）解释：修改保存
+
+电信版中兴G7615双模切换灰色不可选的解决方法
+Telnet  进入命令行后输入
+setmac 3 40962
+reboot
+重启后进入光猫后台就可选了
+
+补充内容 (2023-10-31 03:27):
+G7615更新几条命令:
+sendcmd 1 DB set MgtServer 0 PeriodicInformEnable 0    禁用TR069远程控制
+sendcmd 1 DB set FWLevel 0 Level 0     关闭防火墙;
+
+补充内容 (2023-10-31 03:28):
+sendcmd 1 DB set FWBase 0 FwConnMaxEnable 0   关闭防火墙并发连接数最大限制
+sendcmd 1 DB set FWBase 0 ConntrackMax 65535   改最大并发连接数

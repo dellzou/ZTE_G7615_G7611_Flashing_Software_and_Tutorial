@@ -1,0 +1,10 @@
+这个目录是「G7615_G7611」独立作业用的工具包：
+
+  ZTelnet v1.0.5.exe     新版中兴开 Telnet
+  中兴ONUtelnet 1.5.0\    老版 TelnetONU（带 lic）
+  ztecfg.exe             配置导出解密
+  zte_factroymode.exe    工厂模式
+  factorymode_crack.exe  开工厂模式（老固件）
+  tftpd64.exe            TFTP 服务器
+
+型号专用的开 T 工具在型号目录内，本目录只放通用几件套。

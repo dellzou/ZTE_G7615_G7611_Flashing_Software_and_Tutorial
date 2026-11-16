@@ -1,0 +1,75 @@
+G7615使用telnet命令备份与刷写固件的方法
+
+分区备份命令,根据实际情况更改USB2_disc1
+nand kread /dev/mtd1 0x0 0x300000 /mnt/USB2_disc1/mtd1.bin         //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd2 0x0 0x200000 /mnt/USB2_disc1/mtd2.bin        //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd3 0x0 0x400000 /mnt/USB2_disc1/mtd3.bin        //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd4 0x0 0x400000 /mnt/USB2_disc1/mtd4.bin        //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd5 0x0 0x800000 /mnt/USB2_disc1/mtd5.bin        //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd7 0x0 0x1000000 /mnt/USB2_disc1/mtd7.bin       //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd10 0x0 0x3000000 /mnt/USB2_disc1/mtd10.bin    //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd12 0x0 0x2ac0000 /mnt/USB2_disc1/mtd12.bin    //备份mtd1到u盘mtd1.bin
+nand kread /dev/mtd13 0x0 0x2800000 /mnt/USB2_disc1/mtd13.bin    //备份mtd1到u盘mtd1.bin
+
+
+upgradetest switchver 0   //切换版本0或1
+fw_flashing  //查看当前主备分区调用情况
+cat /proc/mtd   //查看全部分区
+cat /proc/csp/versionstates   //查看分区激活及校验信息
+
+fw_flashing                                                                            //查看当前调用分区情况，0在mtd9分区,1在mtd10分区
+cd /mnt/USB2_disc1                                                               //进入u盘目录,根据实际情况更改USB2_disc1
+echo 2 > /proc/zteinfo/factory/factorymode                             //写入数字2到factorymode
+touch /userconfig/nanddebug                                                 //创建nanddubug临时目录
+nand kerase /dev/mtd7 0x0 0x1000000                                   //擦除mtd7
+nand kwrite /dev/mtd7 0x0 0x1000000 ./mtd7.bin                    //写入mtd7
+nand kerase /dev/mtd10 0x0 0x3000000                                //擦除mtd10
+nand kwrite /dev/mtd10 0x0 0x3000000 ./mtd10.bin                //写入mtd10
+nand kerase /dev/mtd8 0x0 0x200000                                   //擦除mtd8 dbus分区
+nand kerase /dev/mtd11 0x0 0x6800000                                //擦除mtd11 plugin_data分区
+rm /userconfig/nanddebug                                                   //删除nanddebug临时目录
+reboot                                                                               //重启光猫
+
+如果使用fw_flashing查看到正在使用的分区,0就代表正在使用mtd6/mtd9,所要写入和擦除的就必须为mtd7/mtd10,在完成擦写备份分区后使用upgradetest switchver 1   切换主备分区,然后再刷写mtd6/mtd9.
+
+G7615
+Login: root
+Password:
+
+
+BusyBox v1.17.2 (2023-10-28 00:38:24 CST) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+/ # cat /proc/csp/versionstates
+baseaddress    : 0x1700000
+current        : 0  
+version1states : 0x8f
+version2states : 0x83
+____________________________________________________
+Index   Running Latest  CRC     Integrality     Type
+----------------------------------------------------
+0        Y       Y       Y       Y              Upg
+1        N       Y       N       Y              Upg
+----------------------------------------------------
+/ # cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 10000000 00020000 "whole flash"
+mtd1: 00300000 00020000 "u-boot"
+mtd2: 00200000 00020000 "others"
+mtd3: 00400000 00020000 "parameter tags"
+mtd4: 00400000 00020000 "wlan"
+mtd5: 00800000 00020000 "usercfg"
+mtd6: 01000000 00020000 "framework"
+mtd7: 01000000 00020000 "framework1"
+mtd8: 00200000 00020000 "dbus"
+mtd9: 03000000 00020000 "kernel1"
+mtd10: 03000000 00020000 "kernel2"
+mtd11: 06800000 00020000 "plugin_data"
+mtd12: 02ac0000 00020000 "rootfs1"
+mtd13: 02800000 00020000 "rootfs2"
+/ # fw_flashing
+g_zte_current_version_base_address=1700000
+<b000000005>11932:13:34 [U_fw_flashing][Error] [fw_flashing.c(3527)main] baseaddr:1700000, curpdev=/dev/mtd9, offset=0
+<b000000005>11932:13:34 [U_fw_flashing][Error] [fw_flashing.c(3531)main] open  failed!
+<b000000005>11932:13:34 [U_fw_flashing][Error] [fw_flashing.c(3665)main] fw_flashing error
+/ #
