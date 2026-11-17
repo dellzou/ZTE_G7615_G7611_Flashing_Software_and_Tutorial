@@ -196,12 +196,12 @@ e16bc9b66642151de612ee045c2810ca6146975015bd9679a354567f56da2099  olt_tool_unico
 
 ## 相关仓库
 
-同品牌其它机型，命令体系相近，排障时可以互相参照；每个仓库开头都对应一篇文章：
+同品牌其它机型，命令体系或刷机思路相近，排障时可以互相参照；每个仓库开头都对应一篇文章：
 
-- [中兴 F650 / F1855V2 工具包](https://github.com/dellzou/ZTE_F650_F1855V2_Flashing_Software_and_Tutorial)：中兴 F650 / F1855V2，天翼网关 4.0 开 Telnet
-- [中兴 F673AV9 / F7015TV3 / F7610M 工具包](https://github.com/dellzou/ZTE_F673AV9_F7015TV3_F7610M_Flashing_Software_and_Tutorial)：中兴 F673AV9 / F7015TV3 / F7610M，一套命令通吃
-- [中兴 F7607P 工具包](https://github.com/dellzou/ZTE_F7607P_Flashing_Software_and_Tutorial)：中兴 F7607P，改地区与电信版固件
-- [中兴 G7610 工具包](https://github.com/dellzou/ZTE_G7610_Flashing_Software_and_Tutorial)：中兴 G7610，工厂模式、setmac 改码、配置解密
+- [中兴 F650 / F1855V2 工具包](https://github.com/dellzou/ZTE_F650_F1855V2_Flashing_Software_and_Tutorial)：天翼网关 4.0 开 Telnet
+- [中兴 F673AV9 / F7015TV3 / F7610M 工具包](https://github.com/dellzou/ZTE_F673AV9_F7015TV3_F7610M_Flashing_Software_and_Tutorial)：一套命令通吃
+- [中兴 F7607P 工具包](https://github.com/dellzou/ZTE_F7607P_Flashing_Software_and_Tutorial)：改地区与电信版固件
+- [中兴 G7610 工具包](https://github.com/dellzou/ZTE_G7610_Flashing_Software_and_Tutorial)：工厂模式、setmac 改码、配置解密
 
 ## 免责声明
 
